@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Museum</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: #000;
+      font-family: sans-serif;
+    }
+
+    canvas.canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      display: block;
+      outline: none;
+    }
+
+    #info-panel {
+      position: fixed;
+      top: 50%;
+      right: 30px;
+      transform: translateY(-50%);
+      width: 320px;
+      max-height: 40vh;
+      overflow-y: auto;
+      background: rgba(35, 25, 15, 0.9);
+      color: #e6d3a3;
+      padding: 25px;
+      border: 2px solid #ffd700;
+      border-radius: 12px;
+      font-family: "Times New Roman", serif;
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.7);
+      z-index: 100;
+      display: none;
+      pointer-events: auto;
+      transition: opacity 0.4s ease;
+    }
+
+    #info-panel h2 {
+      color: #ffd700;
+      margin-top: 0;
+      font-variant: small-caps;
+      border-bottom: 2px solid #ffd700;
+      padding-bottom: 10px;
+    }
+
+    #info-panel p {
+      line-height: 1.6;
+      font-size: 1.1rem;
+      margin-top: 15px;
+    }
+
+    #tour-instructions {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background: rgba(0, 0, 0, 0.7);
+      color: #fff;
+      padding: 15px;
+      border-radius: 8px;
+      z-index: 10;
+    }
+
+    #start-tour-btn {
+      background: #007bff;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+
+    #start-tour-btn:hover {
+      background: #0056b3;
+    }
+
+    #tour-instructions p {
+      margin: 5px 0;
+      font-size: 14px;
+    }
+
+    #loading {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: white;
+      font-size: 24px;
+      z-index: 1000;
+      text-align: center;
+    }
+
+    #loading.hidden {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="loading">Loading Museum...</div>
+  
+  <canvas class="canvas"></canvas>
+
+  <div id="info-panel"></div>
+
+  <div id="tour-instructions">
+    <button id="start-tour-btn">Start Tour</button>
+    <p>Or press <strong>T</strong> to start the tour</p>
+    <p>Press <strong>M</strong> for move mode</p>
+    <p>Press <strong>R</strong> for rotate mode</p>
+  </div>
+
+  <script async src="https://unpkg.com/es-module-shims@1.6.3/dist/es-module-shims.js"></script>
+  
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+      }
+    }
+  </script>
+
+  <script type="module">
+    // Quick check if everything is loading
+    console.log("Starting to load Three.js...");
+    
+    import * as THREE from "three";
+    console.log("Three.js loaded:", THREE);
+    
+    // Hide loading message
+    document.getElementById('loading').classList.add('hidden');
+    
+    // If this logs, then load your main script
+    const script = document.createElement('script');
+    script.type = 'module';
+    script.src = './hatshepsut.js';
+    document.body.appendChild(script);
+  </script>
+
+  <button id="backButton" onclick="returnToMainWorld()">
+    ← Return to Main World
+  </button>
+  
+  <div id="interactionPrompt">Press 'E' to interact</div>
+  
+  
+  <div id="objectInfoPanel"></div>
+  
+  
+  <div id="portalOverlay"></div>
+  
+  <script>
+    function returnToMainWorld() {
+        const portalOverlay = document.getElementById('portalOverlay');
+        
+        for (let i = 0; i < 12; i++) {
+            setTimeout(() => {
+                const particle = document.createElement('div');
+                particle.className = 'sand-particle';
+                particle.style.animationDelay = `${i * 0.15}s`;
+                particle.style.borderColor = i % 2 === 0 ? '#d2b48c' : 'gold';
+                particle.style.width = `${200 + i * 20}px`;
+                particle.style.height = `${200 + i * 20}px`;
+                portalOverlay.appendChild(particle);
+            }, i * 100);
+        }
+        
+        for (let i = 0; i < 50; i++) {
+            setTimeout(() => {
+                const grain = document.createElement('div');
+                grain.className = 'sand-grain';
+                grain.style.left = `${Math.random() * 100}%`;
+                grain.style.animationDelay = `${Math.random() * 2}s`;
+                grain.style.animationDuration = `${2 + Math.random() * 2}s`;
+                portalOverlay.appendChild(grain);
+            }, Math.random() * 1000);
+        }
+        
+        setTimeout(() => {
+            const text = document.createElement('div');
+            text.className = 'portal-text';
+            text.textContent = 'Returning to Amenhotep II\'s World...';
+            portalOverlay.appendChild(text);
+        }, 800);
+        
+        portalOverlay.classList.add('active');
+        
+        setTimeout(() => {
+            window.location.href = 'index.html';
+        }, 3000);
+    }
+  </script>
+</body>
+</html>
